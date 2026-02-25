@@ -12,17 +12,36 @@ export function renderTemplates() {
     <button id="new-template-btn">+ Novo Template</button>
     <hr>
 
-    ${templates
-      .map(
-        (t) => `
-        <div class="card template-card" data-template-id="${t.id}">
-          <strong>${t.name}</strong>
-        </div>
-      `,
-      )
-      .join("")}
+    <div class="templates-grid">
+      ${templates
+        .map(
+          (t) => `
+          <div class="card template-card" data-template-id="${t.id}">
+
+            <div class="template-header">
+              <strong>${t.name}</strong>
+            </div>
+
+            <div class="template-body">
+              <p>${t.description || ""}</p>
+              <small>Criado em: ${new Date(t.createdAt).toLocaleString()}</small><br>
+              <small>Atualizado em: ${new Date(t.updatedAt).toLocaleString()}</small>
+
+              <div class="template-actions hidden">
+  <button class="view-btn">Ver</button>
+  <button class="edit-btn">Editar</button>
+  <button class="delete-btn danger">Excluir</button>
+</div>
+            </div>
+
+          </div>
+        `,
+        )
+        .join("")}
+    </div>
   `;
 
+  attachTemplateListEvents();
   attachTemplateEvents();
 }
 
@@ -83,4 +102,36 @@ export function renderCreateTemplate() {
   `;
 
   attachTemplateEvents(true);
+}
+
+function attachTemplateListEvents() {
+  document.querySelectorAll(".template-card").forEach((card) => {
+    const actions = card.querySelector(".template-actions");
+    const templateId = Number(card.dataset.templateId);
+
+    card.addEventListener("click", (e) => {
+      if (e.target.closest("button")) return;
+
+      const isOpen = !actions.classList.contains("hidden");
+
+      document
+        .querySelectorAll(".template-actions")
+        .forEach((a) => a.classList.add("hidden"));
+
+      if (!isOpen) {
+        actions.classList.remove("hidden");
+      }
+    });
+
+    card.querySelector(".edit-btn")?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      openTemplateEditor(templateId);
+    });
+
+    card.querySelector(".delete-btn")?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      TemplateService.delete(templateId);
+      renderTemplates();
+    });
+  });
 }
