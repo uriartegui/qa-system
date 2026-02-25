@@ -1,0 +1,26 @@
+.sidebar {
+  width: 260px;
+  height: 100vh;
+  position: fixed;
+  background: var(--color-surface);
+  border-right: 1px solid var(--color-border);
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  transition: width var(--transition-default);
+}
+
+.sidebar--collapsed {
+  width: 80px;
+}
+
+.content {
+  margin-left: 260px;
+  padding: 50px;
+  transition: margin-left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  background: #0d1117;
+}
+
+.sidebar--collapsed ~ .content {
+  margin-left: 80px;
+}
