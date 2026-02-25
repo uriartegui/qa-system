@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>QA Enterprise System</title>
+  </head>
+
+  <body>
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-top">
+        <div class="logo">
+          <div class="logo-icon" id="logoIcon">Q</div>
+          <span class="logo-text">QA System</span>
+        </div>
+        <button class="collapse-btn">❮❮</button>
+      </div>
+
+      <nav class="nav">
+        <button class="nav-item" data-route="dashboard">Dashboard</button>
+        <button class="nav-item" data-route="rules">Regras</button>
+        <button class="nav-item" data-route="regressions">Regressões</button>
+        <button class="nav-item" data-route="templates">Templates</button>
+        <button class="nav-item" data-route="history">Histórico</button>
+      </nav>
+    </div>
+
+    <div class="content" id="content"></div>
+
+    <script type="module" src="/src/app.js"></script>
+
+    <div id="unsaved-modal" class="modal-overlay hidden">
+      <div class="unsaved-modal-card">
+        <h3>Você tem mudanças não salvas</h3>
+        <p>Deseja salvar antes de sair?</p>
+
+        <div class="unsaved-actions">
+          <button id="continue-editing" class="btn-secondary">
+            Continuar editando
+          </button>
+
+          <button id="save-changes" class="btn-primary">Salvar</button>
+
+          <button id="discard-changes" class="btn-danger">Descartar</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="app-modal" class="modal-overlay hidden">
+      <div class="modal-card">
+        <h3 id="app-modal-title"></h3>
+        <p id="app-modal-message"></p>
+
+        <div class="modal-actions">
+          <button id="app-modal-cancel" class="btn-secondary">Cancelar</button>
+          <button id="app-modal-confirm" class="btn-primary">OK</button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
