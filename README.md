@@ -216,3 +216,7 @@ Qualyra será oferecida como SaaS com três planos:
 🟠 Em desenvolvimento ativo (Alpha).
 
 Arquitetura planejada para escalar como produto comercial.
+
+---
+
+### 🚧 Auth module in progress
