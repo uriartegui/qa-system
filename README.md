@@ -12,8 +12,6 @@
 
 Qualyra é uma plataforma SaaS projetada para centralizar, estruturar e monitorar processos de qualidade em empresas de qualquer setor.
 
-A solução permite registrar não conformidades, acompanhar ações corretivas, analisar indicadores estratégicos (KPIs) e garantir rastreabilidade completa das operações.
-
 🔗 **Versão Alpha (Preview)**
 [https://qasystem-alpha.vercel.app/](https://qasystem-alpha.vercel.app/)
 
@@ -26,8 +24,8 @@ A solução permite registrar não conformidades, acompanhar ações corretivas,
 * [🏗 Arquitetura](#-arquitetura)
 * [🏢 Modelo SaaS](#-modelo-saas)
 * [🔐 Segurança](#-segurança)
-* [📦 Funcionalidades](#-funcionalidades)
-* [📊 Roadmap](#-roadmap)
+* [📦 MVP v0.1.0-alpha](#-mvp-v010-alpha)
+* [🔄 Development Workflow](#-development-workflow)
 * [🛠 Tecnologias](#-tecnologias)
 * [🧩 Estrutura do Projeto](#-estrutura-do-projeto)
 * [🚀 Executando Localmente](#-executando-localmente)
@@ -40,32 +38,41 @@ A solução permite registrar não conformidades, acompanhar ações corretivas,
 
 # 💡 Sobre o Projeto
 
-Empresas precisam de controle, rastreabilidade e métricas claras para manter padrões de qualidade elevados.
-
 A Qualyra nasce com o objetivo de ser uma plataforma completa de Gestão de Qualidade Empresarial, atendendo:
 
 * Indústrias
-* Clínicas e área da saúde
+* Clínicas
 * Empresas de tecnologia
 * Empresas de serviços
 * Times internos de controle de qualidade
 
-A arquitetura foi planejada desde o início para operar como produto SaaS (Software as a Service).
+A arquitetura foi planejada desde o início como produto SaaS multi-tenant escalável.
 
 ---
 
 # ✨ Diferenciais
 
-* 🔹 Arquitetura preparada para multi-organização
-* 🔹 Controle estruturado de não conformidades
-* 🔹 Gestão de ações corretivas
-* 🔹 Dashboard estratégico com indicadores
+* 🔹 Arquitetura multi-organização (multi-tenant)
 * 🔹 RBAC (controle de acesso por função)
-* 🔹 Estrutura escalável para crescimento comercial
+* 🔹 JWT + Segurança centralizada
+* 🔹 Estrutura escalável
+* 🔹 Fluxo profissional de desenvolvimento
+* 🔹 Roadmap estruturado por versões
 
 ---
 
 # 🏗 Arquitetura
+
+## 🔹 Backend
+
+* Java 21
+* Spring Boot 3+
+* PostgreSQL
+* JWT (Access Token)
+* BCrypt
+* RBAC (OWNER, ADMIN, MEMBER)
+* Soft Delete
+* Multi-tenant por `organization_id`
 
 ## 🔹 Frontend
 
@@ -74,94 +81,110 @@ A arquitetura foi planejada desde o início para operar como produto SaaS (Softw
 * Arquitetura modular
 * Sistema de rotas próprio
 * Integração com API REST
-* Controle de autenticação
-
-## 🔹 Backend (em desenvolvimento)
-
-* Java + Spring Boot
-* API REST
-* PostgreSQL
-* JWT + Refresh Token
-* Multi-tenant
-* RBAC (Role Based Access Control)
+* Controle de sessão via JWT
 
 ---
 
 # 🏢 Modelo SaaS
 
-A Qualyra opera em arquitetura multi-tenant, permitindo:
+Cada organização possui:
 
-* Isolamento total de dados por organização
-* Controle de usuários por empresa
-* Planos e limites por assinatura
+* Usuários próprios
+* Não conformidades próprias
+* Controle de plano (Free / Pro / Enterprise)
 
-Cada entidade do sistema é vinculada a uma organização, garantindo segurança e separação de dados.
+Isolamento de dados garantido por `organization_id`.
 
 ---
 
 # 🔐 Segurança
 
-* Autenticação via JWT
-* Senhas criptografadas com BCrypt
-* Controle de permissões por role (OWNER, ADMIN, MEMBER)
-* Validações centralizadas no backend
-* Estrutura preparada para logs e auditoria
+* Autenticação JWT
+* Criptografia BCrypt
+* Controle de acesso por Role
+* Endpoints protegidos
+* Validação de transição de status
+* Filtro multi-tenant obrigatório
 
 ---
 
-# 📦 Funcionalidades
+# 📦 MVP v0.1.0-alpha
 
-### MVP (V1)
+## Base Arquitetural
 
-* Cadastro de organização
-* Cadastro de usuários
-* Login autenticado
-* Registro de não conformidades
-* Dashboard inicial
-* Controle de plano
+* Setup Spring Boot
+* Entidade Organization
+* Entidade User + Roles
+* Autenticação JWT
+
+## Core do Produto
+
+* Entidade NonConformity
+* CRUD completo
+* Workflow de Status:
+
+  * OPEN
+  * IN_PROGRESS
+  * RESOLVED
+  * CLOSED
+
+## Interface
+
+* Tela de Login integrada
+* Layout principal (Sidebar + Header)
+* Listagem de NonConformidades
+* Criação
+* Edição
+* Mudança de status
+
+Objetivo: Entregar primeiro módulo funcional demonstrável.
 
 ---
 
-# 📊 Roadmap
+# 🔄 Development Workflow
 
-### V1 – MVP Comercial
+Qualyra segue fluxo baseado em Git Flow simplificado:
 
-* Autenticação completa
-* Multi-organização
-* CRUD de não conformidades
-* Dashboard básico
+## Branches
 
-### V2
+* `main` → Produção
+* `develop` → Integração
+* `feature/*` → Desenvolvimento
+* `hotfix/*` → Correções críticas
 
-* Indicadores avançados
-* Auditoria completa
-* Relatórios exportáveis
+## Fluxo
 
-### V3
+```
+feature → develop → main
+```
 
-* Integrações externas
-* API pública
-* Automação de fluxos
+Regras:
+
+* Pull Request obrigatório
+* Code review antes de merge
+* Sem commit direto na main
+* Versionamento por tag
 
 ---
 
 # 🛠 Tecnologias
 
-**Frontend**
+## Frontend
 
 * Vite
 * JavaScript
 
-**Backend**
+## Backend
 
 * Java
 * Spring Boot
 * PostgreSQL
 
-**Infraestrutura**
+## Infra
 
 * Vercel (Frontend)
-* Cloud Provider (Backend + Banco)
+* Cloud Provider (Backend)
+* Banco gerenciado PostgreSQL
 
 ---
 
@@ -190,17 +213,15 @@ npm run dev
 # 🌍 Deploy
 
 * Frontend: Vercel
-* Backend: Ambiente cloud com PostgreSQL gerenciado
+* Backend: Cloud + PostgreSQL
 
 ---
 
 # 💼 Modelo de Negócio
 
-Qualyra será oferecida como SaaS com três planos:
-
 * **Free** – Uso individual com limitações
 * **Pro** – Pequenas e médias empresas
-* **Enterprise** – Uso corporativo com recursos avançados
+* **Enterprise** – Uso corporativo avançado
 
 ---
 
@@ -215,4 +236,4 @@ Qualyra será oferecida como SaaS com três planos:
 
 🟠 Em desenvolvimento ativo (Alpha).
 
-Arquitetura planejada para escalar como produto comercial.
+Estrutura organizacional, arquitetura SaaS e fluxo profissional definidos.
