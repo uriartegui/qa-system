@@ -1,5 +1,4 @@
 import { AuthService } from "@/modules/auth/auth.service.js";
-
 import {
   hasUnsavedChanges,
   saveCurrentRule,
@@ -11,7 +10,6 @@ const routes = {
   regressions: () => import("@/modules/regressions/regression.page.js"),
   templates: () => import("@/modules/templates/templates.page.js"),
   history: () => import("@/modules/history/history.page.js"),
-
   login: () => import("@/modules/auth/login.page.js"),
 };
 
@@ -30,7 +28,7 @@ export async function navigate(route) {
     route = "login";
   }
 
-  if (hasUnsavedChanges()) {
+  if (route !== "login" && hasUnsavedChanges()) {
     showRouteModal(route);
     return;
   }

@@ -11,18 +11,21 @@ export function render() {
       <input id="login-user" placeholder="Usuário" />
       <input id="login-pass" type="password" placeholder="Senha" />
 
-      <button id="login-btn">Entrar</button>
+      <button id="login-btn" class="btn btn--primary" style="margin-top:16px;">Entrar</button>
     </div>
   `;
 
-  document.getElementById("login-btn")?.addEventListener("click", () => {
+  document.getElementById("login-btn")?.addEventListener("click", async () => {
     const user = document.getElementById("login-user").value;
     const pass = document.getElementById("login-pass").value;
 
-    const success = AuthService.login(user, pass);
+    const success = await AuthService.login(user, pass);
 
     if (success) {
-      location.reload();
+      const sidebar = document.getElementById("sidebar");
+      sidebar.classList.remove("hidden");
+
+      navigate("dashboard");
     } else {
       alert("Usuário ou senha inválidos");
     }

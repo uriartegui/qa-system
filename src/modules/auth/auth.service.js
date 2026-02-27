@@ -1,21 +1,21 @@
-import { storage } from "@/shared/utils/storage.js";
-
-const KEY = "qa:user";
-
 const SESSION_KEY = "qa:session";
 const SESSION_DURATION = 60 * 60 * 1000; // 1 hora
 
 export const AuthService = {
-  login(username, password) {
+  async login(username, password) {
     if (!username || !password) return false;
 
     const session = {
-      user: { username },
+      token: "mock-jwt-token",
+      user: {
+        id: "mock-id",
+        username,
+        role: "ADMIN",
+      },
       expiresAt: Date.now() + SESSION_DURATION,
     };
 
     localStorage.setItem(SESSION_KEY, JSON.stringify(session));
-
     return true;
   },
 
@@ -38,8 +38,11 @@ export const AuthService = {
   },
 
   getUser() {
-    const session = this.getSession();
-    return session?.user || null;
+    return this.getSession()?.user || null;
+  },
+
+  getToken() {
+    return this.getSession()?.token || null;
   },
 
   isAuthenticated() {
