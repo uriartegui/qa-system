@@ -20,9 +20,7 @@ function initApp() {
   }
 
   document.addEventListener("click", (e) => {
-    const navItem = e.target.closest(".nav-item");
     const logoutBtn = e.target.closest("#logout-btn");
-
     if (logoutBtn) {
       AuthService.logout();
       sidebar.classList.add("hidden");
@@ -30,6 +28,16 @@ function initApp() {
       return;
     }
 
+    const logoIcon = e.target.closest(".logo-icon");
+    if (logoIcon) {
+      if (sidebar.classList.contains("collapsed")) {
+        sidebar.classList.remove("collapsed");
+        localStorage.setItem("sidebar-collapsed", "false");
+      }
+      return;
+    }
+
+    const navItem = e.target.closest(".nav-item");
     if (!navItem || !navItem.dataset.route) return;
 
     document
@@ -37,7 +45,6 @@ function initApp() {
       .forEach((btn) => btn.classList.remove("nav-item--active"));
 
     navItem.classList.add("nav-item--active");
-
     navigate(navItem.dataset.route);
   });
 }
@@ -60,7 +67,6 @@ function initSidebarUI() {
 
   collapseBtn.addEventListener("click", () => {
     sidebar.classList.toggle("collapsed");
-
     localStorage.setItem(
       "sidebar-collapsed",
       sidebar.classList.contains("collapsed"),

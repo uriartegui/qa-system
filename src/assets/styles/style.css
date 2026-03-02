@@ -612,6 +612,7 @@ select:focus {
   display: flex;
   align-items: center;
   gap: 8px;
+  cursor: pointer;
 }
 
 .logo-icon {
@@ -624,6 +625,7 @@ select:focus {
   justify-content: center;
   font-weight: 600;
   font-size: 18px;
+  cursor: pointer;
 }
 
 .logo-text {
@@ -681,11 +683,20 @@ select:focus {
   margin: 0;
 }
 
+.sidebar.collapsed .logo-icon:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
 .sidebar.collapsed .logo-icon {
-  margin: 0 auto !important;
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: transparent;
+  transition: background 0.2s ease;
 }
 
 .collapse-icon {
