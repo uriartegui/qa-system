@@ -5,60 +5,6 @@ import { initRouter, navigate } from "@/core/router.js";
 
 document.title = ENV.appName;
 
-function initApp() {
-  const sidebar = document.getElementById("sidebar");
-
-  initRouter();
-  initSidebarUI();
-
-  if (AuthService.isAuthenticated()) {
-    sidebar.classList.remove("hidden");
-    navigate("dashboard");
-  } else {
-    sidebar.classList.add("hidden");
-    navigate("login");
-  }
-
-  document.addEventListener("click", (e) => {
-    const logoutBtn = e.target.closest("#logout-btn");
-    if (logoutBtn) {
-      AuthService.logout();
-      sidebar.classList.add("hidden");
-      navigate("login");
-      return;
-    }
-
-    const logoIcon = e.target.closest(".logo-icon");
-    if (logoIcon) {
-      if (sidebar.classList.contains("collapsed")) {
-        sidebar.classList.remove("collapsed");
-        localStorage.setItem("sidebar-collapsed", "false");
-      }
-      return;
-    }
-
-    const navItem = e.target.closest(".nav-item");
-    if (!navItem || !navItem.dataset.route) return;
-
-    document
-      .querySelectorAll(".nav-item")
-      .forEach((btn) => btn.classList.remove("nav-item--active"));
-
-    navItem.classList.add("nav-item--active");
-    navigate(navItem.dataset.route);
-  });
-}
-
-initApp();
-
-setInterval(() => {
-  if (!AuthService.isAuthenticated()) {
-    const sidebar = document.getElementById("sidebar");
-    sidebar.classList.add("hidden");
-    navigate("login");
-  }
-}, 30_000);
-
 function initSidebarUI() {
   const sidebar = document.getElementById("sidebar");
   const collapseBtn = document.querySelector(".collapse-btn");
@@ -78,3 +24,65 @@ function initSidebarUI() {
     sidebar.classList.add("collapsed");
   }
 }
+
+function initLogout() {
+  const sidebar = document.getElementById("sidebar");
+
+  document.addEventListener("click", (e) => {
+    const logoutBtn = e.target.closest("#logout-btn");
+    if (!logoutBtn) return;
+
+    AuthService.logout();
+    if (sidebar) {
+      sidebar.classList.add("hidden");
+      document.body.classList.add("sidebar-collapsed");
+    }
+    navigate("login");
+  });
+}
+
+function initApp() {
+  const sidebar = document.getElementById("sidebar");
+
+  initRouter();
+  initSidebarUI();
+  initLogout();
+
+  if (AuthService.isAuthenticated()) {
+    sidebar.classList.remove("hidden");
+    navigate("dashboard");
+  } else {
+    sidebar.classList.add("hidden");
+    navigate("login");
+  }
+
+  document.addEventListener("click", (e) => {
+    const logoIcon = e.target.closest(".logo-icon");
+    if (logoIcon) {
+      if (sidebar.classList.contains("collapsed")) {
+        sidebar.classList.remove("collapsed");
+        localStorage.setItem("sidebar-collapsed", "false");
+      }
+      return;
+    }
+
+    const navItem = e.target.closest(".nav-item");
+    if (!navItem || !navItem.dataset.route) return;
+
+    document
+      .querySelectorAll(".nav-item")
+      .forEach((btn) => btn.classList.remove("nav-item--active"));
+
+    navItem.classList.add("nav-item--active");
+    navigate(navItem.dataset.route);
+  });
+
+  setInterval(() => {
+    if (!AuthService.isAuthenticated()) {
+      sidebar.classList.add("hidden");
+      navigate("login");
+    }
+  }, 30_000);
+}
+
+document.addEventListener("DOMContentLoaded", initApp);

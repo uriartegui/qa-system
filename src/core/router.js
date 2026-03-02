@@ -1,4 +1,6 @@
 import { AuthService } from "@/modules/auth/auth.service.js";
+import { render as renderLogin } from "@/modules/auth/login.page.js";
+import { render as renderDashboard } from "@/modules/dashboard/dashboard.page.js";
 
 import {
   hasUnsavedChanges,

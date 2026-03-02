@@ -1,21 +1,33 @@
-import { storage } from "@/shared/utils/storage.js";
-
-const KEY = "qa:user";
-
 const SESSION_KEY = "qa:session";
-const SESSION_DURATION = 60 * 60 * 1000; // 1 hora
+const SESSION_DURATION = 60 * 60 * 1000;
 
 export const AuthService = {
-  login(username, password) {
-    if (!username || !password) return false;
+  async login(email, password) {
+    if (!email || !password) return false;
+
+    const validEmail = "admin@qualyra.dev";
+    const validPass = "qualyra123";
+
+    if (email !== validEmail || password !== validPass) {
+      return false;
+    }
 
     const session = {
-      user: { username },
+      token: "mock-jwt-token-123",
+      user: {
+        id: "user-1",
+        name: "Guilherme Uriarte",
+        email: validEmail,
+        role: "OWNER",
+      },
+      organization: {
+        id: "org-1",
+        name: "Qualyra Labs",
+      },
       expiresAt: Date.now() + SESSION_DURATION,
     };
 
     localStorage.setItem(SESSION_KEY, JSON.stringify(session));
-
     return true;
   },
 
@@ -28,18 +40,23 @@ export const AuthService = {
     if (!raw) return null;
 
     const session = JSON.parse(raw);
-
     if (Date.now() > session.expiresAt) {
       this.logout();
       return null;
     }
-
     return session;
   },
 
   getUser() {
-    const session = this.getSession();
-    return session?.user || null;
+    return this.getSession()?.user || null;
+  },
+
+  getOrganization() {
+    return this.getSession()?.organization || null;
+  },
+
+  getToken() {
+    return this.getSession()?.token || null;
   },
 
   isAuthenticated() {
