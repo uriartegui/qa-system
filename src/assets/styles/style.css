@@ -1129,3 +1129,15 @@ body {
   padding: 0;
   height: 100%;
 }
+
+#content:has(> div[class*="min-h-screen"]) {
+  margin-left: 0 !important;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#content:has(> div[class*="min-h-screen"]) > div {
+  width: 100%;
+}

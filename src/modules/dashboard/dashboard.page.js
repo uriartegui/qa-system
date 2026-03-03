@@ -14,72 +14,85 @@ export function render() {
   const lastRegression = [...db.regressions].sort((a, b) => b.date - a.date)[0];
 
   document.getElementById("content").innerHTML = `
-    <div class="dashboard-flow">
-      <h1>Workspace</h1>
+    <div class="p-8 max-w-5xl mx-auto">
 
-      <div class="dash-block">
-        <h3>Continue de onde parou</h3>
-        <div class="dash-card" id="last-case">
-          ${lastCase ? lastCase.title : "Nenhum case recente"}
+      <!-- Header -->
+      <div class="mb-8">
+        <h1 class="text-2xl font-semibold text-white">Workspace</h1>
+        <p class="text-muted text-sm mt-1">Bem-vindo ao painel de qualidade da Qualyra</p>
+      </div>
+
+      <!-- Stats cards -->
+      <div class="grid grid-cols-3 gap-4 mb-8">
+        <div class="bg-surface rounded-xl p-5 border border-border">
+          <p class="text-muted text-xs uppercase tracking-wider mb-1">Não Conformidades</p>
+          <p class="text-3xl font-bold text-white">0</p>
+          <p class="text-success text-xs mt-1">↑ 0 esta semana</p>
+        </div>
+        <div class="bg-surface rounded-xl p-5 border border-border">
+          <p class="text-muted text-xs uppercase tracking-wider mb-1">Em Progresso</p>
+          <p class="text-3xl font-bold text-warning">0</p>
+          <p class="text-muted text-xs mt-1">Aguardando resolução</p>
+        </div>
+        <div class="bg-surface rounded-xl p-5 border border-border">
+          <p class="text-muted text-xs uppercase tracking-wider mb-1">Críticas</p>
+          <p class="text-3xl font-bold text-danger">0</p>
+          <p class="text-muted text-xs mt-1">Requerem atenção imediata</p>
         </div>
       </div>
 
-      <div class="dash-block">
-        <h3>Atualizados recentemente</h3>
+      <!-- Continue de onde parou + Última regressão -->
+      <div class="grid grid-cols-2 gap-4 mb-8">
+        <div class="bg-surface rounded-xl p-5 border border-border">
+          <h3 class="text-sm font-medium text-muted uppercase tracking-wider mb-3">Continue de onde parou</h3>
+          <div class="bg-card rounded-lg p-4 border border-border">
+            <p class="text-white text-sm">${lastCase ? lastCase.title : "Nenhum case recente"}</p>
+            ${lastCase ? `<p class="text-muted text-xs mt-1">Última atualização recente</p>` : ""}
+          </div>
+        </div>
+        <div class="bg-surface rounded-xl p-5 border border-border">
+          <h3 class="text-sm font-medium text-muted uppercase tracking-wider mb-3">Última regressão</h3>
+          <div class="bg-card rounded-lg p-4 border border-border">
+            <p class="text-white text-sm">${lastRegression ? lastRegression.name : "Nenhuma regressão criada"}</p>
+            ${lastRegression ? `<p class="text-muted text-xs mt-1">${new Date(lastRegression.date).toLocaleDateString()}</p>` : ""}
+          </div>
+        </div>
+      </div>
+
+      <!-- Atualizados recentemente -->
+      <div class="bg-surface rounded-xl p-5 border border-border mb-8">
+        <h3 class="text-sm font-medium text-muted uppercase tracking-wider mb-3">Atualizados recentemente</h3>
         ${
           recentCases.length
             ? recentCases
                 .map(
                   (c) => `
-              <div class="dash-item" data-id="${c.id}">
-                ${c.title}
-              </div>
-            `,
+            <div class="flex items-center gap-3 py-3 border-b border-border last:border-0">
+              <div class="w-2 h-2 rounded-full bg-primary flex-shrink-0"></div>
+              <span class="text-white text-sm">${c.title}</span>
+            </div>`,
                 )
                 .join("")
-            : `<div class="dash-muted">Nenhum case ainda</div>`
+            : `<p class="text-muted text-sm">Nenhum case ainda</p>`
         }
       </div>
 
-      <div class="dash-block">
-        <h3>Última regressão</h3>
-        <div class="dash-card" id="last-regression">
-          ${lastRegression ? lastRegression.name : "Nenhuma regressão criada"}
+      <!-- Ações rápidas -->
+      <div>
+        <h3 class="text-sm font-medium text-muted uppercase tracking-wider mb-3">Ações rápidas</h3>
+        <div class="flex gap-3">
+          <button data-route="rules" class="px-4 py-2 bg-primary hover:bg-primary-hover text-white text-sm rounded-lg transition-colors">
+            + Novo Case
+          </button>
+          <button data-route="regressions" class="px-4 py-2 bg-surface hover:bg-card text-white text-sm rounded-lg border border-border transition-colors">
+            + Nova Regressão
+          </button>
+          <button data-route="templates" class="px-4 py-2 bg-surface hover:bg-card text-white text-sm rounded-lg border border-border transition-colors">
+            + Novo Template
+          </button>
         </div>
       </div>
 
-      <div class="dash-block">
-        <h3>Ações rápidas</h3>
-        <div class="dash-actions">
-          <button data-route="rules">Novo Case</button>
-          <button data-route="regressions">Nova Regressão</button>
-          <button data-route="templates">Novo Template</button>
-        </div>
-      </div>
     </div>
   `;
-
-  attachDashboardEvents(lastCase, lastRegression);
-}
-
-function attachDashboardEvents(lastCase, lastRegression) {
-  if (lastCase) {
-    document.getElementById("last-case")?.addEventListener("click", () => {
-      navigate("rules");
-    });
-  }
-
-  document.querySelectorAll(".dash-item").forEach((item) => {
-    item.addEventListener("click", () => {
-      navigate("rules");
-    });
-  });
-
-  if (lastRegression) {
-    document
-      .getElementById("last-regression")
-      ?.addEventListener("click", () => {
-        navigate("regressions");
-      });
-  }
 }
