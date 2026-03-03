@@ -28,7 +28,7 @@ public class Organization {
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
-    protected Organization() {
+    public Organization() {
     }
 
     public Organization(String name, OrganizationType type, OrganizationPlan plan) {

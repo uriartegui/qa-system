@@ -89,6 +89,11 @@ public class NonConformityService {
         return repository.findByOrganization_IdAndDeletedFalse(orgId, pageable);
     }
 
+    @Transactional(readOnly = true)
+    public Page<NonConformity> findAll(Pageable pageable) {
+        return repository.findAll(pageable);
+    }
+
     @Transactional
     public NonConformity update(UUID id,
                                 NonConformityUpdateDTO dto,
@@ -108,7 +113,7 @@ public class NonConformityService {
             nc.setStatus(dto.getStatus());
             nc.setDueDate(dto.getDueDate());
 
-            // se mudou assignedTo, valida que é da mesma org
+            // valida que é da mesma org
             if (dto.getAssignedToId() != null) {
                 User assignedTo = userRepository.findById(dto.getAssignedToId())
                         .filter(u -> u.getOrganization().getId().equals(currentUser.getOrganization().getId()))

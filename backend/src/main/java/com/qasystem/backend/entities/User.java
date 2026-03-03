@@ -42,7 +42,7 @@ public class User {
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
-    protected User() {
+    public User() {
     }
 
     public User(String name,
@@ -52,7 +52,7 @@ public class User {
                 Organization organization) {
         this.name = name;
         this.email = email;
-        this.password = password; // depois: já vem BCrypt
+        this.password = password;
         this.role = role;
         this.organization = organization;
         this.active = true;
