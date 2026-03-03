@@ -25,6 +25,30 @@ function initSidebarUI() {
   }
 }
 
+function initMobileMenu() {
+  const mobileBtn = document.getElementById("mobile-menu-btn");
+  const sidebar = document.getElementById("sidebar");
+  if (!mobileBtn || !sidebar) return;
+
+  let overlay = document.getElementById("mobile-overlay");
+  if (!overlay) {
+    overlay = document.createElement("div");
+    overlay.id = "mobile-overlay";
+    overlay.className = "mobile-overlay";
+    document.body.appendChild(overlay);
+  }
+
+  mobileBtn.addEventListener("click", () => {
+    sidebar.classList.toggle("mobile-open");
+    overlay.classList.toggle("active");
+  });
+
+  overlay.addEventListener("click", () => {
+    sidebar.classList.remove("mobile-open");
+    overlay.classList.remove("active");
+  });
+}
+
 function initLogout() {
   const sidebar = document.getElementById("sidebar");
 
@@ -46,6 +70,7 @@ function initApp() {
 
   initRouter();
   initSidebarUI();
+  initMobileMenu();
   initLogout();
 
   if (AuthService.isAuthenticated()) {
@@ -75,6 +100,13 @@ function initApp() {
 
     navItem.classList.add("nav-item--active");
     navigate(navItem.dataset.route);
+
+    // Fechar sidebar mobile ao navegar
+    if (sidebar.classList.contains("mobile-open")) {
+      sidebar.classList.remove("mobile-open");
+      const overlay = document.getElementById("mobile-overlay");
+      if (overlay) overlay.classList.remove("active");
+    }
   });
 
   setInterval(() => {
