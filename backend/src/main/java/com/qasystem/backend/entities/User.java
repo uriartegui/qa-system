@@ -1,8 +1,13 @@
 package com.qasystem.backend.entities;
 
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.Instant;
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -12,7 +17,7 @@ import java.util.UUID;
                 @UniqueConstraint(name = "uk_users_email", columnNames = "email")
         }
 )
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue
@@ -33,7 +38,7 @@ public class User {
     private Role role;
 
     @Column(name = "active", nullable = false)
-    private boolean active = true;
+    private boolean active;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "organization_id", nullable = false, columnDefinition = "UUID")
@@ -64,6 +69,36 @@ public class User {
         if (createdAt == null) {
             createdAt = Instant.now();
         }
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_" + this.role.name()));
+    }
+
+    @Override
+    public String getUsername() {  // ← NOVO
+        return this.email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {  // ← NOVO
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {  // ← NOVO
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {  // ← NOVO
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {  // ← NOVO
+        return this.active;
     }
 
     // GETTERS E SETTERS
@@ -109,6 +144,10 @@ public class User {
     }
 
     public boolean isActive() {
+        return active;
+    }
+
+    public boolean getActive() {
         return active;
     }
 

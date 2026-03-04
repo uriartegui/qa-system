@@ -18,7 +18,7 @@ import java.util.UUID;
 public class JwtService {
 
     private static final SecretKey SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-    private static final long EXPIRATION_TIME = 86400000; // 24h
+    private static final long EXPIRATION_TIME = 86400000;
 
     public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();

@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -51,39 +52,43 @@ public class UserService {
         }
     }
 
+    public List<User> findAllByOrganization(UUID orgId) {
+        return userRepository.findByOrganizationId(orgId);
+    }
+
+    public User findById(UUID id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("User ID " + id + " not found"));
+    }
+
     public User findByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
     @Transactional
-    public User createUser(UUID organizationId,
-                           String name,
-                           String email,
-                           String rawPassword,
-                           Role role,
-                           User requester) {
+    public User createUser(UUID organizationId, String name, String email,
+                           String rawPassword, Role role, User requester) {
 
-        // OWNER pode criar ADMIN e MEMBER
-        // ADMIN só pode criar MEMBER
         if (requester.getRole() == Role.ADMIN && role != Role.MEMBER) {
             throw new IllegalArgumentException("ADMIN só pode criar MEMBER");
         }
         if (requester.getRole() == Role.MEMBER) {
             throw new IllegalArgumentException("MEMBER não pode criar usuários");
         }
-
         if (userRepository.existsByEmail(email)) {
             throw new IllegalArgumentException("Email já está em uso");
         }
 
         Organization org = organizationRepository.findById(organizationId)
-                .orElseThrow(() -> new IllegalArgumentException("Organization não encontrada"));
+                .orElseThrow(() -> new IllegalArgumentException("Org não encontrada"));
 
-        String passwordHash = rawPassword;
+        String passwordHash = passwordEncoder.encode(rawPassword);
 
         User user = new User(name, email, passwordHash, role, org);
+        user.setActive(true);
         return userRepository.save(user);
     }
+
 }
 
