@@ -7,6 +7,8 @@ document.title = ENV.appName;
 
 let sidebarEl = null;
 
+const SIDEBAR_COLLAPSED_KEY = "qualyra:sidebarCollapsed";
+
 function handleDocumentClick(e) {
   const logoutBtn = e.target.closest("#logout-btn");
   if (logoutBtn) {
@@ -32,52 +34,89 @@ function handleDocumentClick(e) {
   navigate(navItem.dataset.route);
 }
 
+function applySidebarCollapsedState(sidebar, collapsed) {
+  if (collapsed) {
+    sidebar.classList.add("sidebar--collapsed");
+  } else {
+    sidebar.classList.remove("sidebar--collapsed");
+  }
+}
+
 function initSidebarUI() {
   const sidebar = sidebarEl || document.getElementById("sidebar");
   const collapseBtn = document.querySelector(".collapse-btn");
   const logoIcon = document.querySelector(".logo-icon");
   if (!sidebar) return;
 
-  const isCollapsed = localStorage.getItem("sidebar-collapsed") === "true";
-  if (isCollapsed) {
-    sidebar.classList.add("collapsed");
+  // estado salvo (apenas desktop)
+  const savedCollapsed = localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === "true";
+  if (window.innerWidth > 768) {
+    applySidebarCollapsedState(sidebar, savedCollapsed);
+    if (collapseBtn) {
+      collapseBtn.setAttribute(
+        "aria-expanded",
+        savedCollapsed ? "false" : "true",
+      );
+    }
   } else {
-    sidebar.classList.remove("collapsed");
+    applySidebarCollapsedState(sidebar, false);
+    if (collapseBtn) {
+      collapseBtn.setAttribute("aria-expanded", "true");
+    }
   }
 
+  // toggle desktop
   if (collapseBtn) {
     collapseBtn.addEventListener("click", () => {
-      const collapsed = sidebar.classList.toggle("collapsed");
-      localStorage.setItem("sidebar-collapsed", collapsed ? "true" : "false");
+      const collapsed = !sidebar.classList.contains("sidebar--collapsed");
+      applySidebarCollapsedState(sidebar, collapsed);
+      localStorage.setItem(SIDEBAR_COLLAPSED_KEY, String(collapsed));
+      collapseBtn.setAttribute("aria-expanded", collapsed ? "false" : "true");
     });
   }
 
+  // clique no logo expande se estiver colapsado
   if (logoIcon) {
     logoIcon.style.cursor = "pointer";
     logoIcon.addEventListener("click", () => {
-      if (sidebar.classList.contains("collapsed")) {
-        sidebar.classList.remove("collapsed");
-        localStorage.setItem("sidebar-collapsed", "false");
+      if (sidebar.classList.contains("sidebar--collapsed")) {
+        applySidebarCollapsedState(sidebar, false);
+        localStorage.setItem(SIDEBAR_COLLAPSED_KEY, "false");
+        if (collapseBtn) {
+          collapseBtn.setAttribute("aria-expanded", "true");
+        }
       }
     });
   }
 
+  // mobile
   const mobileMenuBtn = document.getElementById("mobile-menu-btn");
   const mobileOverlay = document.getElementById("mobile-overlay");
 
-  if (mobileMenuBtn) {
+  if (mobileMenuBtn && mobileOverlay) {
     mobileMenuBtn.addEventListener("click", () => {
       sidebar.classList.toggle("mobile-open");
       mobileOverlay.classList.toggle("active");
     });
-  }
 
-  if (mobileOverlay) {
     mobileOverlay.addEventListener("click", () => {
       sidebar.classList.remove("mobile-open");
       mobileOverlay.classList.remove("active");
     });
   }
+
+  // ao redimensionar para mobile, ignora colapso e garante aria
+  window.addEventListener("resize", () => {
+    if (!collapseBtn) return;
+    if (window.innerWidth <= 768) {
+      applySidebarCollapsedState(sidebar, false);
+      collapseBtn.setAttribute("aria-expanded", "true");
+    } else {
+      const stored = localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === "true";
+      applySidebarCollapsedState(sidebar, stored);
+      collapseBtn.setAttribute("aria-expanded", stored ? "false" : "true");
+    }
+  });
 }
 
 function initApp() {
