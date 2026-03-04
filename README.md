@@ -10,236 +10,111 @@
 
 > Transformando controle de qualidade em inteligência estratégica.
 
-Qualyra é uma plataforma SaaS projetada para centralizar, estruturar e monitorar processos de qualidade em empresas de qualquer setor.
+Qualyra é uma plataforma SaaS que ajuda equipes de qualidade a sair do “excel caótico” e passar a ter processos padronizados, rastreáveis e mensuráveis em um único lugar.
 
-🔗 **Versão Alpha (Preview)**  
+🔗 **Versão Alpha (Preview Produção)**  
 https://qasystem-alpha.vercel.app/
 
-🔖 **Roadmap**  
-Veja o plano de evolução por versões em [`ROADMAP.md`](./ROADMAP.md).
+🧪 **Ambiente de Desenvolvimento (branch `develop`)**  
+https://qualyra-46ow.vercel.app/
 
-🧭 **Guia de Contribuição**  
-Padrões de branches, commits e PRs em [`CONTRIBUTING.md`](./CONTRIBUTING.md).
-
-📐 **Arquitetura Técnica**  
-Detalhes de decisões técnicas em [`docs/architecture.md`](./docs/architecture.md).
+🔖 **Roadmap** – veja a evolução por versões em [`ROADMAP.md`](./ROADMAP.md).  
+🧭 **Guia de Contribuição** – fluxo de trabalho e padrões em [`CONTRIBUTING.md`](./CONTRIBUTING.md).  
+📐 **Arquitetura Técnica** – detalhes para devs em [`docs/architecture.md`](./docs/architecture.md).
 
 ---
 
-# 📚 Sumário
+# 💡 O que o Qualyra resolve
 
-- [💡 Sobre o Projeto](#-sobre-o-projeto)
-- [✨ Diferenciais](#-diferenciais)
-- [🏗 Arquitetura](#-arquitetura)
-- [🏢 Modelo SaaS](#-modelo-saas)
-- [🔐 Segurança](#-segurança)
-- [📦 MVP v0.1.0-alpha](#-mvp-v010-alpha)
-- [🔄 Development Workflow](#-development-workflow)
-- [🛠 Tecnologias](#-tecnologias)
-- [🧩 Estrutura do Projeto](#-estrutura-do-projeto)
-- [🚀 Executando Localmente](#-executando-localmente)
-- [🌍 Deploy](#-deploy)
-- [💼 Modelo de Negócio](#-modelo-de-negócio)
-- [👨‍💻 Fundadores](#-fundadores)
-- [📌 Status](#-status)
+Gestores de qualidade hoje lidam com:
+
+- Não conformidades espalhadas em planilhas, e-mails e grupos de mensagem.
+- Falta de visibilidade sobre prazos, responsáveis e ações corretivas.
+- Dificuldade para comprovar a eficácia do sistema de qualidade em auditorias.
+- Repetição de erros por falta de histórico centralizado.
+
+Qualyra centraliza tudo em uma plataforma única, permitindo acompanhar a jornada completa da não conformidade até o fechamento, com responsabilidade clara e histórico completo.
 
 ---
 
-# 💡 Sobre o Projeto
+# 🎯 Benefícios principais
 
-A Qualyra nasce com o objetivo de ser uma plataforma completa de Gestão de Qualidade Empresarial, atendendo:
-
-- Indústrias
-- Clínicas
-- Empresas de tecnologia
-- Empresas de serviços
-- Times internos de controle de qualidade
-
-A arquitetura foi planejada desde o início como produto SaaS multi-tenant escalável.
+- ✅ **Menos retrabalho** – cada não conformidade tem responsável, prazo e plano de ação definidos.
+- ✅ **Visão em tempo real** – dashboards e listas mostram o que está aberto, atrasado ou em risco.
+- ✅ **Padronização de processos** – workflows configurados para seguir as políticas da organização.
+- ✅ **Rastreabilidade total** – histórico de status, comentários e ações tomadas em cada caso.
+- ✅ **Pronto para auditorias** – informações organizadas para responder rapidamente a exigências de órgãos reguladores e certificações.
+- ✅ **Escalável por unidade/cliente** – múltiplas organizações na mesma plataforma, com dados isolados.
 
 ---
 
-# ✨ Diferenciais
+# 👥 Para quem é
 
-- 🔹 Arquitetura multi-organização (multi-tenant)
-- 🔹 RBAC (controle de acesso por função)
-- 🔹 JWT + Segurança centralizada
-- 🔹 Estrutura escalável
-- 🔹 Fluxo profissional de desenvolvimento
-- 🔹 Roadmap estruturado por versões
+Qualyra foi pensado para:
 
----
-
-# 🏗 Arquitetura
-
-## 🔹 Backend
-
-- Java 21
-- Spring Boot 3+
-- PostgreSQL
-- JWT (Access Token)
-- BCrypt
-- RBAC (OWNER, ADMIN, MEMBER)
-- Soft Delete
-- Multi-tenant por `organization_id`
-
-## 🔹 Frontend
-
-- Vite
-- JavaScript (Vanilla)
-- Arquitetura modular
-- Sistema de rotas próprio
-- Integração com API REST
-- Controle de sessão via JWT
+- Gestores de qualidade em **clínicas, hospitais e instituições de saúde**.
+- Times de QA em **indústrias e serviços**.
+- Empresas de tecnologia que precisam de trilhas claras de não conformidade e melhoria contínua.
+- Times internos de **compliance e operações** que precisam de rastreabilidade.
 
 ---
 
-# 🏢 Modelo SaaS
+# 🧩 O que você consegue fazer hoje (MVP v0.1.0-alpha)
 
-Cada organização possui:
+- Cadastrar organizações e usuários com diferentes perfis de acesso.
+- Registrar não conformidades com dados estruturados.
+- Acompanhar o fluxo de status:
+  - OPEN → IN_PROGRESS → RESOLVED → CLOSED.
+- Visualizar a lista de não conformidades em uma interface única.
+- Manter login seguro e isolamento de dados por organização.
 
-- Usuários próprios
-- Não conformidades próprias
-- Controle de plano (Free / Pro / Enterprise)
-
-Isolamento de dados garantido por `organization_id`.
-
----
-
-# 🔐 Segurança
-
-- Autenticação JWT
-- Criptografia BCrypt
-- Controle de acesso por Role
-- Endpoints protegidos
-- Validação de transição de status
-- Filtro multi-tenant obrigatório
+Objetivo do MVP: oferecer um primeiro módulo funcional para gestão de não conformidades que já possa ser usado em ambiente real ou piloto.
 
 ---
 
-# 📦 MVP v0.1.0-alpha
+# 🔐 Confidencialidade e segurança em linha com QA
 
-## Base Arquitetural
-
-- Setup Spring Boot
-- Entidade Organization
-- Entidade User + Roles
-- Autenticação JWT
-
-## Core do Produto
-
-- Entidade NonConformity
-- CRUD completo
-- Workflow de Status:
-  - OPEN
-  - IN_PROGRESS
-  - RESOLVED
-  - CLOSED
-
-## Interface
-
-- Tela de Login integrada
-- Layout principal (Sidebar + Header)
-- Listagem de NonConformities
-- Criação
-- Edição
-- Mudança de status
-
-Objetivo: Entregar primeiro módulo funcional demonstrável.
+- Acesso controlado por perfis (OWNER, ADMIN, MEMBER).
+- Autenticação segura com tokens.
+- Isolamento de dados por organização, evitando vazamento entre clientes/unidades.
+- Registro de ações críticas para apoiar conformidade e auditorias internas.
 
 ---
 
-# 🔄 Development Workflow
+# 🌍 Como o Qualyra é entregue
 
-Qualyra segue fluxo baseado em Git Flow simplificado:
-
-## Branches
-
-- `main` → Produção
-- `develop` → Integração
-- `feature/*` → Desenvolvimento
-- `hotfix/*` → Correções críticas
-
-## Fluxo
-
-```text
-feature → develop → main
-```
-
-Regras:
-
-- Pull Request obrigatório
-- Code review antes de merge
-- Sem commit direto na main
-- Versionamento por tag (`v0.1.0-alpha`, `v0.2.0`, etc.)
+- Modelo **SaaS** (software como serviço), acessado via navegador.
+- Diferentes planos (Free / Pro / Enterprise) para se adaptar a times pequenos ou grandes.
+- Multi-tenant: várias organizações na mesma base, cada uma com seus próprios usuários e dados.
 
 ---
 
-# 🛠 Tecnologias
+# 🛠 Para times técnicos
 
-## Frontend
+Se você é dev ou responsável pela implantação:
 
-- Vite
-- JavaScript
+- **Frontend:** Vite + JavaScript.
+- **Backend:** Java 21 + Spring Boot 3, PostgreSQL.
+- **Infra:** Frontend em Vercel; backend em cloud com banco PostgreSQL gerenciado.
 
-## Backend
-
-- Java
-- Spring Boot
-- PostgreSQL
-
-## Infra
-
-- Vercel (Frontend)
-- Cloud Provider (Backend)
-- Banco gerenciado PostgreSQL
+Mais detalhes técnicos, endpoints e decisões de arquitetura estão documentados em [`docs/architecture.md`](./docs/architecture.md).
 
 ---
 
-# 🧩 Estrutura do Projeto
-
-```text
-src/
-├── core/
-├── modules/
-├── services/
-├── router/
-└── config/
-```
-
----
-
-# 🚀 Executando Localmente
+# 🚀 Executando localmente (dev)
 
 ```bash
 npm install
 npm run dev
 ```
 
----
-
-# 🌍 Deploy
-
-- Frontend: Vercel
-- Backend: Cloud + PostgreSQL
-
----
-
-# 💼 Modelo de Negócio
-
-- **Free** – Uso individual com limitações
-- **Pro** – Pequenas e médias empresas
-- **Enterprise** – Uso corporativo avançado
+(Consulte a documentação do backend em `docs/architecture.md` para subir a API e o banco.)
 
 ---
 
 # 👨‍💻 Fundadores
 
-- **Guilherme Uriarte** – Frontend & Product Strategy
-- **Paulo Batista** – Backend Engineer & System Architecture
+- **Guilherme Uriarte** – Product & Frontend.
+- **Paulo Batista** – Backend & System Architecture.
 
----
-
-# 📌 Status
-
-🟠 Em desenvolvimento ativo (Alpha).
+📌 Status: 🟠 Em desenvolvimento ativo (Alpha).
