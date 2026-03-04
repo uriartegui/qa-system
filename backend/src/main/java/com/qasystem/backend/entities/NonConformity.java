@@ -56,7 +56,7 @@ public class NonConformity {
     @Column(name = "deleted", nullable = false)
     private boolean deleted = false;
 
-    protected NonConformity() {
+    public NonConformity() {
     }
 
     public NonConformity(Organization organization,

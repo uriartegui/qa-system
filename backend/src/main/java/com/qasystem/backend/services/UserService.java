@@ -1,10 +1,11 @@
 package com.qasystem.backend.services;
 
-import com.qasystem.backend.entities.Organization;
-import com.qasystem.backend.entities.Role;
-import com.qasystem.backend.entities.User;
+import com.qasystem.backend.entities.*;
 import com.qasystem.backend.repositories.OrganizationRepository;
 import com.qasystem.backend.repositories.UserRepository;
+import jakarta.annotation.PostConstruct;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,11 +16,44 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final OrganizationRepository organizationRepository;
+    private final PasswordEncoder passwordEncoder;
+
 
     public UserService(UserRepository userRepository,
-                       OrganizationRepository organizationRepository) {
+                       OrganizationRepository organizationRepository,
+                       PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.organizationRepository = organizationRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    @PostConstruct
+    public void initAdmin() {
+        if (userRepository.count() == 0) {
+            System.out.println("Criando admin...");
+            Organization org = new Organization();
+            org.setName("Qualyra SA");
+            org.setType(OrganizationType.BUSINESS);
+            org.setPlan(OrganizationPlan.FREE);
+            org = organizationRepository.save(org);
+            System.out.println("Org ID: " + org.getId());
+
+            User admin = new User();
+            admin.setName("Admin Qualyra");
+            admin.setEmail("admin@qualyra.dev");
+            admin.setPassword(passwordEncoder.encode("admin123"));
+            admin.setRole(Role.ADMIN);
+            admin.setOrganization(org);
+            admin.setActive(true);
+            admin = userRepository.save(admin);
+            System.out.println("Admin criado! ID: " + admin.getId());
+
+        }
+    }
+
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
     @Transactional
@@ -46,8 +80,7 @@ public class UserService {
         Organization org = organizationRepository.findById(organizationId)
                 .orElseThrow(() -> new IllegalArgumentException("Organization não encontrada"));
 
-        // Próximo passo: aplicar BCrypt aqui e guardar o hash
-        String passwordHash = rawPassword; // placeholder
+        String passwordHash = rawPassword;
 
         User user = new User(name, email, passwordHash, role, org);
         return userRepository.save(user);
