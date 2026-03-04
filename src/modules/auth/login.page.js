@@ -92,9 +92,6 @@ export function render() {
             <div id="register-error" class="login-error">
               <p>Preencha todos os campos.</p>
             </div>
-            <div id="register-success" class="login-error" style="color:#22c55e;">
-              <p>Conta criada (mock) com sucesso.</p>
-            </div>
 
             <div style="display:flex;justify-content:space-between;gap:8px;margin-top:10px;">
               <button id="register-back" class="login-link" type="button">
@@ -125,9 +122,6 @@ export function render() {
             <div id="forgot-error" class="login-error">
               <p>Informe um e-mail válido.</p>
             </div>
-            <div id="forgot-success" class="login-error" style="color:#22c55e;">
-              <p>Se este e-mail existir, enviaremos instruções de recuperação (mock).</p>
-            </div>
 
             <div style="display:flex;justify-content:space-between;gap:8px;margin-top:10px;">
               <button id="forgot-back" class="login-link" type="button">
@@ -146,9 +140,71 @@ export function render() {
       </p>
     </div>
   </div>
-`;
 
+  <div id="notify-overlay" class="notify-overlay" role="dialog" aria-modal="true" aria-labelledby="notify-title">
+    <div class="notify-box">
+      <div class="notify-box-header">
+        <div id="notify-icon" class="notify-icon">!</div>
+        <h3 id="notify-title">Mensagem</h3>
+      </div>
+      <p id="notify-message"></p>
+      <div class="notify-actions">
+        <button id="notify-ok" class="btn btn--primary" type="button">
+          OK
+        </button>
+      </div>
+    </div>
+  </div>
+  `;
+
+  //
+  // Notify popup
+  //
+  const notifyOverlay = document.getElementById("notify-overlay");
+  const notifyBox = notifyOverlay.querySelector(".notify-box");
+  const notifyTitle = document.getElementById("notify-title");
+  const notifyMessage = document.getElementById("notify-message");
+  const notifyOk = document.getElementById("notify-ok");
+  const notifyIcon = document.getElementById("notify-icon");
+
+  function showNotify({ type = "success", title, message, onClose }) {
+    const safeType = type === "error" ? "error" : "success";
+
+    notifyBox.classList.remove("success", "error");
+    notifyBox.classList.add(safeType);
+
+    notifyIcon.textContent = safeType === "success" ? "✓" : "!";
+    notifyTitle.textContent =
+      title || (safeType === "success" ? "Tudo certo" : "Ops");
+    notifyMessage.textContent = message || "";
+
+    notifyOverlay.classList.add("notify-overlay--show");
+    notifyOk.focus();
+
+    function handleClose() {
+      notifyOverlay.classList.remove("notify-overlay--show");
+      notifyOk.removeEventListener("click", handleClose);
+      document.removeEventListener("keydown", handleEsc);
+      notifyOverlay.removeEventListener("click", handleBackdrop);
+      if (typeof onClose === "function") onClose();
+    }
+
+    function handleEsc(e) {
+      if (e.key === "Escape") handleClose();
+    }
+
+    function handleBackdrop(e) {
+      if (e.target === notifyOverlay) handleClose();
+    }
+
+    notifyOk.addEventListener("click", handleClose);
+    document.addEventListener("keydown", handleEsc);
+    notifyOverlay.addEventListener("click", handleBackdrop);
+  }
+
+  //
   // helpers de view
+  //
   const viewLogin = document.getElementById("view-login");
   const viewRegister = document.getElementById("view-register");
   const viewForgot = document.getElementById("view-forgot");
@@ -170,6 +226,8 @@ export function render() {
   const passInput = document.getElementById("login-pass");
   const errorEl = document.getElementById("login-error");
   const btn = document.getElementById("login-btn");
+
+  errorEl.style.display = "none";
 
   btn.addEventListener("click", async () => {
     const email = emailInput.value.trim();
@@ -218,6 +276,43 @@ export function render() {
   const registerBack = document.getElementById("register-back");
   const forgotBack = document.getElementById("forgot-back");
 
+  //
+  // Mock criar conta
+  //
+  const registerName = document.getElementById("register-name");
+  const registerEmail = document.getElementById("register-email");
+  const registerPass = document.getElementById("register-pass");
+  const registerPassConfirm = document.getElementById("register-pass-confirm");
+  const registerError = document.getElementById("register-error");
+  const registerConfirm = document.getElementById("register-confirm");
+
+  registerError.style.display = "none";
+
+  function resetRegisterForm() {
+    if (!registerName) return;
+    registerError.style.display = "none";
+    registerName.value = "";
+    registerEmail.value = "";
+    registerPass.value = "";
+    registerPassConfirm.value = "";
+  }
+
+  //
+  // Mock esqueci senha
+  //
+  const forgotEmail = document.getElementById("forgot-email");
+  const forgotError = document.getElementById("forgot-error");
+  const forgotConfirm = document.getElementById("forgot-confirm");
+
+  forgotError.style.display = "none";
+
+  function resetForgotForm() {
+    if (!forgotEmail) return;
+    forgotError.style.display = "none";
+    forgotEmail.value = "";
+  }
+
+  // Navegação
   if (registerBtn) {
     registerBtn.addEventListener("click", () => {
       resetRegisterForm();
@@ -234,41 +329,22 @@ export function render() {
 
   if (registerBack) {
     registerBack.addEventListener("click", () => {
+      resetRegisterForm();
       setView("login");
     });
   }
 
   if (forgotBack) {
     forgotBack.addEventListener("click", () => {
+      resetForgotForm();
       setView("login");
     });
   }
 
-  //
-  // Mock criar conta
-  //
-  const registerName = document.getElementById("register-name");
-  const registerEmail = document.getElementById("register-email");
-  const registerPass = document.getElementById("register-pass");
-  const registerPassConfirm = document.getElementById("register-pass-confirm");
-  const registerError = document.getElementById("register-error");
-  const registerSuccess = document.getElementById("register-success");
-  const registerConfirm = document.getElementById("register-confirm");
-
-  function resetRegisterForm() {
-    if (!registerName) return;
-    registerError.style.display = "none";
-    registerSuccess.style.display = "none";
-    registerName.value = "";
-    registerEmail.value = "";
-    registerPass.value = "";
-    registerPassConfirm.value = "";
-  }
-
+  // Criar conta (mock)
   if (registerConfirm) {
     registerConfirm.addEventListener("click", () => {
       registerError.style.display = "none";
-      registerSuccess.style.display = "none";
 
       const name = registerName.value.trim();
       const email = registerEmail.value.trim();
@@ -290,35 +366,23 @@ export function render() {
       }
 
       // MOCK: aqui no futuro vai o POST /auth/register
-      registerSuccess.style.display = "block";
-
-      setTimeout(() => {
-        setView("login");
-        // opcional: já preencher login com o email recém-cadastrado
-        emailInput.value = email;
-      }, 800);
+      showNotify({
+        type: "success",
+        title: "Conta criada",
+        message:
+          "Sua conta (mock) foi criada com sucesso. Você já pode entrar usando este e-mail.",
+        onClose: () => {
+          setView("login");
+          emailInput.value = email;
+        },
+      });
     });
   }
 
-  //
-  // Mock esqueci senha
-  //
-  const forgotEmail = document.getElementById("forgot-email");
-  const forgotError = document.getElementById("forgot-error");
-  const forgotSuccess = document.getElementById("forgot-success");
-  const forgotConfirm = document.getElementById("forgot-confirm");
-
-  function resetForgotForm() {
-    if (!forgotEmail) return;
-    forgotError.style.display = "none";
-    forgotSuccess.style.display = "none";
-    forgotEmail.value = "";
-  }
-
+  // Esqueci senha (mock)
   if (forgotConfirm) {
     forgotConfirm.addEventListener("click", () => {
       forgotError.style.display = "none";
-      forgotSuccess.style.display = "none";
 
       const email = forgotEmail.value.trim();
       if (!email) {
@@ -328,11 +392,15 @@ export function render() {
       }
 
       // MOCK: aqui no futuro vai o POST /auth/forgot-password
-      forgotSuccess.style.display = "block";
-
-      setTimeout(() => {
-        setView("login");
-      }, 800);
+      showNotify({
+        type: "success",
+        title: "E-mail de recuperação",
+        message:
+          "Se este e-mail existir, enviaremos um link de recuperação (mock).",
+        onClose: () => {
+          setView("login");
+        },
+      });
     });
   }
 }
