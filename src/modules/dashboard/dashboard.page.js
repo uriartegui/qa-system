@@ -17,10 +17,18 @@ export function render() {
     <div class="p-8 max-w-5xl mx-auto">
 
       <!-- Header -->
-      <div class="mb-8">
-        <h1 class="text-2xl font-semibold text-white">Workspace</h1>
-        <p class="text-muted text-sm mt-1">Bem-vindo ao painel de qualidade da Qualyra</p>
-      </div>
+      <div class="mb-8 flex items-baseline justify-between gap-4">
+  <div>
+    <h1 class="text-xl font-semibold text-text-main">Workspace</h1>
+    <p class="text-sm text-muted mt-1">
+      Bem-vindo ao painel de qualidade da Qualyra.
+    </p>
+  </div>
+  <span class="text-xs px-2.5 py-1 rounded-full bg-card border border-border text-muted">
+    Ambiente de desenvolvimento
+  </span>
+</div>
+
 
       <!-- Stats cards -->
       <div class="grid grid-cols-3 gap-4 mb-8">

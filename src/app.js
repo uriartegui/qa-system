@@ -109,12 +109,13 @@ function initApp() {
     }
   });
 
-  setInterval(() => {
-    if (!AuthService.isAuthenticated()) {
-      sidebar.classList.add("hidden");
-      navigate("login");
-    }
-  }, 30_000);
+  if (AuthService.isAuthenticated()) {
+    sidebar.classList.remove("hidden");
+    navigate("dashboard");
+  } else {
+    sidebar.classList.add("hidden");
+    navigate("login");
+  }
 }
 
 document.addEventListener("DOMContentLoaded", initApp);
