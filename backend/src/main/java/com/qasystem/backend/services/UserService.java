@@ -1,5 +1,6 @@
 package com.qasystem.backend.services;
 
+import com.qasystem.backend.dtos.UpdateUserDTO;
 import com.qasystem.backend.entities.*;
 import com.qasystem.backend.repositories.OrganizationRepository;
 import com.qasystem.backend.repositories.UserRepository;
@@ -52,6 +53,11 @@ public class UserService {
         }
     }
 
+    public User findByIdForOrg(UUID id, UUID orgId) {
+        return userRepository.findByIdAndOrgId(id, orgId)
+                .orElseThrow(() -> new RuntimeException("User não encontrado"));
+    }
+
     public List<User> findAllByOrganization(UUID orgId) {
         return userRepository.findByOrganizationId(orgId);
     }
@@ -88,6 +94,31 @@ public class UserService {
         User user = new User(name, email, passwordHash, role, org);
         user.setActive(true);
         return userRepository.save(user);
+    }
+
+    @Transactional
+    public User update(UUID id, UpdateUserDTO dto, User requester) {
+        User user = findByIdForOrg(id, requester.getOrganization().getId());
+        if (requester.getRole() != Role.OWNER && dto.getRole() != Role.MEMBER) {
+            throw new IllegalArgumentException("Só OWNER altera ADMIN");
+        }
+        user.setName(dto.getName());
+        user.setRole(dto.getRole());
+        return userRepository.save(user);
+    }
+
+    @Transactional
+    public User toggleActive(UUID id, User requester) {
+        User user = findByIdForOrg(id, requester.getOrganization().getId());
+        user.setActive(!user.isActive());
+        return userRepository.save(user);
+    }
+
+    @Transactional
+    public void softDelete(UUID id, User requester) {
+        User user = findByIdForOrg(id, requester.getOrganization().getId());
+        user.setActive(false);  // soft delete
+        userRepository.save(user);
     }
 
 }
