@@ -1,9 +1,9 @@
 package com.qasystem.backend.services;
 
-import com.qasystem.backend.entities.Organization;
-import com.qasystem.backend.entities.OrganizationPlan;
-import com.qasystem.backend.entities.OrganizationType;
+import com.qasystem.backend.dtos.OrganizationUpdateDTO;
+import com.qasystem.backend.entities.*;
 import com.qasystem.backend.repositories.OrganizationRepository;
+import com.qasystem.backend.repositories.exceptions.ForbiddenException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
-@Service  // ← ADICIONA!
+@Service
 public class OrganizationService {
 
     private final OrganizationRepository repository;
@@ -43,4 +43,22 @@ public class OrganizationService {
         org.setName(name);
         return repository.save(org);
     }
+
+    @Transactional
+    public Organization updateForOwner(UUID orgId, OrganizationUpdateDTO dto, User requester) {
+
+        if (requester.getRole() != Role.OWNER) {
+            throw new ForbiddenException("Somente OWNER pode editar organização");
+        }
+
+        Organization org = repository.findById(orgId)
+                .orElseThrow(() -> new IllegalArgumentException("Organização não encontrada"));
+
+        org.setName(dto.getName());
+        org.setDescription(dto.getDescription());
+        org.setLogoUrl(dto.getLogoUrl());
+
+        return repository.save(org);
+    }
+
 }

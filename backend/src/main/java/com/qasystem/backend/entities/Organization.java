@@ -25,6 +25,12 @@ public class Organization {
     @Column(name = "plan", nullable = false, length = 20)
     private OrganizationPlan plan;
 
+    @Column(name = "description", length = 500)
+    private String description;
+
+    @Column(name = "logo_url", length = 255)
+    private String logoUrl;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
@@ -35,6 +41,8 @@ public class Organization {
         this.name = name;
         this.type = type;
         this.plan = plan;
+        this.description = description;
+        this.logoUrl = logoUrl;
         this.createdAt = Instant.now();
     }
 
@@ -77,6 +85,22 @@ public class Organization {
 
     public void setPlan(OrganizationPlan plan) {
         this.plan = plan;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getLogoUrl() {
+        return logoUrl;
+    }
+
+    public void setLogoUrl(String logoUrl) {
+        this.logoUrl = logoUrl;
     }
 
     public Instant getCreatedAt() {

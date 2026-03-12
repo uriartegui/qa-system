@@ -43,7 +43,6 @@ public class UserController {
     }
 
 
-    // Atualiza apenas o status (ativo ou inativo)
     @PatchMapping("/{id}/status")
     public ResponseEntity<UserDTO> toggleStatus(
             @AuthenticationPrincipal User requester,

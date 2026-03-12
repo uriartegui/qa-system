@@ -54,12 +54,12 @@ public class UserService {
     }
 
     public User findByIdForOrg(UUID id, UUID orgId) {
-        return userRepository.findByIdAndOrgId(id, orgId)
+        return userRepository.findByIdAndOrganization_Id(id, orgId)
                 .orElseThrow(() -> new RuntimeException("User não encontrado"));
     }
 
     public List<User> findAllByOrganization(UUID orgId) {
-        return userRepository.findByOrganizationId(orgId);
+        return userRepository.findByOrganization_Id(orgId);
     }
 
     public User findById(UUID id) {
